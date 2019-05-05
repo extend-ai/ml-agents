@@ -91,8 +91,9 @@ class UnityEnvironment(BaseUnityEnvironment):
             )
         self._loaded = True
 
+        logger.info('wtf', seed)
         rl_init_parameters_in = UnityRLInitializationInput(seed=seed)
-        try:
+        try:    
             aca_params = self.send_academy_parameters(rl_init_parameters_in)
         except UnityTimeOutException:
             self._close()

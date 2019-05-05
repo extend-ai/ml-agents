@@ -33,7 +33,8 @@ class UnityEnv(gym.Env):
         uint8_visual=False,
         multiagent=False,
         flatten_branched=False,
-        no_graphics=False
+        no_graphics=False,
+        seed=0
     ):
         """
         Environment initialization
@@ -45,7 +46,7 @@ class UnityEnv(gym.Env):
         :param flatten_branched: If True, turn branched discrete action spaces into a Discrete space rather than MultiDiscrete.
         :param no_graphics: Whether to run the Unity simulator in no-graphics mode
         """
-        self._env = UnityEnvironment(environment_filename, worker_id, no_graphics=no_graphics)
+        self._env = UnityEnvironment(environment_filename, worker_id, no_graphics=no_graphics, seed=seed)
         self.name = self._env.academy_name
         self.visual_obs = None
         self._current_state = None
@@ -142,13 +143,13 @@ class UnityEnv(gym.Env):
         else:
             self._observation_space = spaces.Box(-high, high, dtype=np.float32)
 
-    def reset(self):
+    def reset(self, config):
         """Resets the state of the environment and returns an initial observation.
         In the case of multi-agent environments, this is a list.
         Returns: observation (object/list): the initial observation of the
             space.
         """
-        info = self._env.reset()[self.brain_name]
+        info = self._env.reset(config=config)[self.brain_name]
         n_agents = len(info.agents)
         self._check_agents(n_agents)
         self.game_over = False
